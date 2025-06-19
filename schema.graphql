@@ -18,17 +18,38 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type UserPaginationResponse {
+  data: [User!]!
+  total: Float!
+  currentPage: Float!
+  itemsPerPage: Float!
+}
+
 type Query {
-  users: [User!]!
-  user(id: Float!): User
+  getAllUser(filter: UserFilter!): UserPaginationResponse!
+  getUserById(id: Float!): User
+  getUserByEmail(email: String!): User
+}
+
+input UserFilter {
+  search: String
+  itemsPerPage: Int
+  page: Int
 }
 
 type Mutation {
   createUser(userData: CreateUserDto!): User!
+  updateUser(id: Float!, dataUpdate: UpdateUserDto!): User!
+  deleteOneById(id: Float!): Boolean!
 }
 
 input CreateUserDto {
   email: String!
   password: String!
   fullname: String
+}
+
+input UpdateUserDto {
+  fullname: String
+  avatarUrl: String
 }

@@ -26,3 +26,18 @@ export class User {
   @Field()
   updatedAt: Date;
 }
+
+@ObjectType()
+export class UserPaginationResponse {
+  @Field(() => [User])
+  data: User[];
+
+  @Field()
+  total: number;
+
+  @Field()
+  currentPage: number;
+
+  @Field()
+  itemsPerPage: number;
+}
