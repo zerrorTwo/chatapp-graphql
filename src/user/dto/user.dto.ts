@@ -15,7 +15,7 @@ export class CreateUserDto {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  fullname?: string;
+  userName?: string;
 }
 
 @InputType()
@@ -34,7 +34,7 @@ export class UserFilter {
 export class UpdateUserDto {
   @Field(() => String, { nullable: true })
   @IsOptional()
-  fullname?: string;
+  userName?: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
