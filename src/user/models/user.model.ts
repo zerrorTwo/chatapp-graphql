@@ -6,7 +6,7 @@ export class User {
   id: number;
 
   @Field()
-  fullname: string;
+  userName: string;
 
   @Field(() => String, { nullable: true }) // Explicitly define as String
   avatarUrl?: string | null;

@@ -25,7 +25,7 @@ export class UserService {
       where: {
         OR: [
           {
-            fullname: {
+            userName: {
               contains: search,
             },
           },
@@ -42,7 +42,7 @@ export class UserService {
       where: {
         OR: [
           {
-            fullname: {
+            userName: {
               contains: search,
             },
           },

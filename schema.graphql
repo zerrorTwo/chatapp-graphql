@@ -4,7 +4,7 @@
 
 type User {
   id: Int!
-  fullname: String!
+  userName: String!
   avatarUrl: String
   email: String!
   emailVerifiedAt: DateTime
@@ -25,10 +25,19 @@ type UserPaginationResponse {
   itemsPerPage: Float!
 }
 
+type RegisterResponse {
+  user: User
+}
+
+type LoginResponse {
+  user: User!
+}
+
 type Query {
   getAllUser(filter: UserFilter!): UserPaginationResponse!
   getUserById(id: Float!): User
   getUserByEmail(email: String!): User
+  helloNe: String!
 }
 
 input UserFilter {
@@ -41,15 +50,31 @@ type Mutation {
   createUser(userData: CreateUserDto!): User!
   updateUser(id: Float!, dataUpdate: UpdateUserDto!): User!
   deleteOneById(id: Float!): Boolean!
+  register(registerInput: RegisterDto!): RegisterResponse!
+  login(loginInput: LoginDto!): LoginResponse!
+  logout: String!
+  refreshToken: String!
 }
 
 input CreateUserDto {
   email: String!
   password: String!
-  fullname: String
+  userName: String
 }
 
 input UpdateUserDto {
-  fullname: String
+  userName: String
   avatarUrl: String
+}
+
+input RegisterDto {
+  email: String!
+  userName: String!
+  password: String!
+  confirmPassword: String!
+}
+
+input LoginDto {
+  email: String!
+  password: String!
 }
