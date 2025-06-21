@@ -12,10 +12,11 @@ import { LoginDto, RegisterDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
 
 interface JwtPayload {
-  sub: number;
+  id: number;
   email: string;
   iat?: number;
   exp?: number;
+
   [key: string]: any;
 }
 
@@ -47,7 +48,7 @@ export class AuthService {
     }
 
     const userExists = await this.prisma.user.findUnique({
-      where: { id: payload.sub },
+      where: { id: payload.id },
     });
 
     if (!userExists) {
@@ -58,7 +59,7 @@ export class AuthService {
     const expiration = Math.floor(Date.now() / 1000) + expiresIn;
 
     const accessToken = this.jwtService.sign(
-      { sub: payload.sub, email: payload.email, exp: expiration },
+      { id: payload.id, email: payload.email, exp: expiration },
       {
         secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
       },
@@ -67,29 +68,6 @@ export class AuthService {
     res.cookie('access_token', accessToken, { httpOnly: true });
 
     return { accessToken };
-  }
-
-  private async issueTokens(user: User, res: Response): Promise<any> {
-    const payload = { sub: user.id, email: user.email };
-
-    const accessToken = this.jwtService.sign(
-      { ...payload },
-      {
-        secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
-        expiresIn: '150sec',
-      },
-    );
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
-      expiresIn: '7d',
-    });
-
-    res.cookie('access_token', accessToken, { httpOnly: true });
-    res.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-    });
-
-    return { user };
   }
 
   async validateUser(loginDto: LoginDto) {
@@ -130,8 +108,29 @@ export class AuthService {
   }
 
   async logout(response: Response) {
-    response.clearCookie('access_token');
     response.clearCookie('refresh_token');
     return 'Successfully logged out';
+  }
+
+  private async issueTokens(user: User, res: Response): Promise<any> {
+    const payload = { id: user.id, email: user.email };
+
+    const accessToken = this.jwtService.sign(
+      { ...payload },
+      {
+        secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
+        expiresIn: '150sec',
+      },
+    );
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
+      expiresIn: '7d',
+    });
+
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+    });
+
+    return { user, accessToken };
   }
 }
