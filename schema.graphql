@@ -31,6 +31,7 @@ type RegisterResponse {
 
 type LoginResponse {
   user: User!
+  accessToken: String!
 }
 
 type Query {
