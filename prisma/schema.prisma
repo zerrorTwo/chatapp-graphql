@@ -20,9 +20,8 @@ model User {
   email           String          @unique
   emailVerifiedAt DateTime?
   password        String
+  googleId        String?         @unique
   rememberToken   String?
-  accounts        Account[]
-  sessions        Session[]
   chatrooms       Chatroom[]      @relation("ChatroomUsers")
   messages        Message[]
   ChatroomUsers   ChatroomUsers[]
@@ -30,46 +29,6 @@ model User {
   updatedAt       DateTime        @updatedAt
 
   @@map("users")
-}
-
-model Account {
-  id                String  @id @default(cuid())
-  userId            Int
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       Int
-  expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("sessions")
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verification_tokens")
 }
 
 model Chatroom {

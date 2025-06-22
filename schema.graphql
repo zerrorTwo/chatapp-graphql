@@ -53,6 +53,7 @@ type Mutation {
   deleteOneById(id: Float!): Boolean!
   register(registerInput: RegisterDto!): RegisterResponse!
   login(loginInput: LoginDto!): LoginResponse!
+  ggLogin(ggLoginInput: GoogleLoginDto!): LoginResponse!
   logout: String!
   refreshToken: String!
 }
@@ -78,4 +79,10 @@ input RegisterDto {
 input LoginDto {
   email: String!
   password: String!
+}
+
+input GoogleLoginDto {
+  email: String!
+  name: String!
+  googleId: String!
 }

@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 import { PrismaService } from '../prisma.service';
 import { User } from '@prisma/client';
-import { LoginDto, RegisterDto } from './dto/auth.dto';
+import { GoogleLoginDto, LoginDto, RegisterDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
 
 interface JwtPayload {
@@ -105,6 +105,33 @@ export class AuthService {
       });
     }
     return this.issueTokens(user, response);
+  }
+
+  async googleLogin(googleLoginDto: GoogleLoginDto, response: Response) {
+    const { email, googleId, name } = googleLoginDto;
+    try {
+      let user = await this.prisma.user.findFirst({
+        where: {
+          OR: [{ email }, { googleId }],
+        },
+      });
+      if (user) {
+        throw new UnauthorizedException('User already in use');
+      }
+      const hashedPassword = await bcrypt.hash(googleId, 10);
+      user = await this.prisma.user.create({
+        data: {
+          email,
+          googleId,
+          userName: name,
+          password: hashedPassword,
+        },
+      });
+
+      return this.issueTokens(user, response);
+    } catch {
+      throw new UnauthorizedException('Invalid or expired login token');
+    }
   }
 
   async logout(response: Response) {
