@@ -65,8 +65,6 @@ export class AuthService {
       },
     );
 
-    res.cookie('access_token', accessToken, { httpOnly: true });
-
     return { accessToken };
   }
 
@@ -139,16 +137,8 @@ export class AuthService {
     return 'Successfully logged out';
   }
 
-  private async issueTokens(user: User, res: Response): Promise<any> {
-    const payload = { id: user.id, email: user.email };
-
-    const accessToken = this.jwtService.sign(
-      { ...payload },
-      {
-        secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
-        expiresIn: '150sec',
-      },
-    );
+  async setRefreshTokenCookie(res: Response): Promise<string> {
+    const payload = { id: 1, email: 'a@gmail.com' };
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
       expiresIn: '7d',
@@ -156,8 +146,30 @@ export class AuthService {
 
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    return { user, accessToken };
+    return refreshToken;
+  }
+
+  private async issueTokens(user: User, res: Response): Promise<any> {
+    const payload = { id: user.id, email: user.email };
+
+    const accessToken = this.jwtService.sign(
+      { ...payload },
+      {
+        secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
+        expiresIn: '10sec',
+      },
+    );
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
+      expiresIn: '7d',
+    });
+
+    return { user, accessToken, refreshToken };
   }
 }
