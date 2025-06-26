@@ -14,4 +14,7 @@ export class LoginResponse {
 
   @Field(() => String)
   accessToken: string;
+
+  @Field(() => String)
+  refreshToken: string;
 }

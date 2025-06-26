@@ -59,4 +59,15 @@ export class AuthResolver {
   async helloNe() {
     return 'hello123';
   }
+
+  @Mutation(() => String)
+  async setRefreshTokenCookie(
+    @Context() context: { req: Request; res: Response },
+  ): Promise<string> {
+    try {
+      return this.authService.setRefreshTokenCookie(context.res);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 }
