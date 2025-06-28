@@ -16,7 +16,6 @@ export class UserResolver {
     @CurrentUser() user: User,
     @Args('filter') filter: UserFilter,
   ): Promise<UserPaginationResponse> {
-    console.log(user);
     return await this.userService.findAll(filter);
   }
 
