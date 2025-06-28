@@ -11,7 +11,8 @@ import { User } from '@prisma/client';
 import { GoogleLoginDto, LoginDto, RegisterDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
 import { EXPIRESIN } from 'src/constants/access.token.expires';
-
+import { OAuth2Client } from 'google-auth-library';
+const client = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
 interface JwtPayload {
   id: number;
   email: string;
@@ -156,5 +157,39 @@ export class AuthService {
     });
 
     return { user, accessToken };
+  }
+
+  async loginWithGoogleIdToken(idToken: string, res: Response) {
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    if (!payload || !payload.email || !payload.sub || !payload.name) {
+      throw new UnauthorizedException('Invalid Google token');
+    }
+
+    const email = payload.email;
+    const googleId = payload.sub;
+    const name = payload.name;
+
+    let user = await this.prisma.user.findFirst({
+      where: { email },
+    });
+
+    if (!user) {
+      user = await this.prisma.user.create({
+        data: {
+          email,
+          googleId,
+          userName: name,
+          password: await bcrypt.hash(googleId, 10), // or something random
+        },
+      });
+    }
+
+    return this.issueTokens(user, res);
   }
 }

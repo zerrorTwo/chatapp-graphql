@@ -53,3 +53,9 @@ export class GoogleLoginDto {
   @IsNotEmpty({ message: 'GoogleId is required.' })
   googleId: string;
 }
+
+@InputType()
+export class GoogleIdTokenDto {
+  @Field()
+  idToken: string;
+}

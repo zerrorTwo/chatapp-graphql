@@ -1,7 +1,12 @@
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { LoginResponse, RegisterResponse } from './models/auth.model';
-import { GoogleLoginDto, LoginDto, RegisterDto } from './dto/auth.dto';
+import {
+  GoogleIdTokenDto,
+  GoogleLoginDto,
+  LoginDto,
+  RegisterDto,
+} from './dto/auth.dto';
 import { BadRequestException } from '@nestjs/common';
 import { Request, Response } from 'express';
 
@@ -58,5 +63,13 @@ export class AuthResolver {
   @Query(() => String)
   async helloNe() {
     return 'hello123';
+  }
+
+  @Mutation(() => LoginResponse)
+  async loginWithGoogleIdToken(
+    @Args('input') input: string,
+    @Context() context: { res: Response },
+  ): Promise<LoginResponse> {
+    return this.authService.loginWithGoogleIdToken(input, context.res);
   }
 }
