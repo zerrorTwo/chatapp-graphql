@@ -32,7 +32,6 @@ type RegisterResponse {
 type LoginResponse {
   user: User!
   accessToken: String!
-  refreshToken: String!
 }
 
 type Query {
@@ -57,7 +56,6 @@ type Mutation {
   ggLogin(ggLoginInput: GoogleLoginDto!): LoginResponse!
   logout: String!
   refreshToken: String!
-  setRefreshTokenCookie: String!
 }
 
 input CreateUserDto {
