@@ -34,7 +34,6 @@ export class AuthGuard implements CanActivate {
       ctx.getContext().req.user_data = user;
       return true;
     } catch (error) {
-      console.log('AuthGuard Error:', error);
       throw new UnauthorizedException('Invalid token');
     }
   }

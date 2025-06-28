@@ -47,7 +47,7 @@ export class AuthResolver {
   @Mutation(() => String)
   async refreshToken(
     @Context() context: { req: Request; res: Response },
-  ): Promise<{ accessToken: string }> {
+  ): Promise<string> {
     try {
       return this.authService.refreshToken(context.req, context.res);
     } catch (error) {
@@ -58,16 +58,5 @@ export class AuthResolver {
   @Query(() => String)
   async helloNe() {
     return 'hello123';
-  }
-
-  @Mutation(() => String)
-  async setRefreshTokenCookie(
-    @Context() context: { req: Request; res: Response },
-  ): Promise<string> {
-    try {
-      return this.authService.setRefreshTokenCookie(context.res);
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
   }
 }
