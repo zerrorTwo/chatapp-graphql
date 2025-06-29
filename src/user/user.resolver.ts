@@ -21,13 +21,12 @@ export class UserResolver {
 
   @UseGuards(AuthGuard)
   @Query(() => User, { nullable: true })
-  async getUserById(
-    @CurrentUser() user: User,
-    @Args('id') id: number,
-  ): Promise<User | null> {
+  async getUserById(@CurrentUser() user: User): Promise<User | null> {
+    const id = user?.id;
     return await this.userService.findOne(Number(id));
   }
 
+  @UseGuards(AuthGuard)
   @Query(() => User, { nullable: true })
   async getUserByEmail(@Args('email') email: string): Promise<User | null> {
     return await this.userService.findByEmail(String(email));
@@ -38,14 +37,17 @@ export class UserResolver {
     return await this.userService.create(userData);
   }
 
+  @UseGuards(AuthGuard)
   @Mutation(() => User)
   async updateUser(
-    @Args('id') id: number,
+    @CurrentUser() user: User,
     @Args('dataUpdate') dataUpdate: UpdateUserDto,
   ): Promise<User> {
+    const id = user?.id;
     return await this.userService.updateOneById(id, dataUpdate);
   }
 
+  @UseGuards(AuthGuard)
   @Mutation(() => Boolean)
   async deleteOneById(@Args('id') id: number): Promise<boolean> {
     return await this.userService.deleteOneById(Number(id));

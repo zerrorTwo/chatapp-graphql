@@ -17,6 +17,9 @@ export class User {
   @Field(() => Date, { nullable: true })
   emailVerifiedAt: Date | null; // Changed to Date | null to match Prisma
 
+  @Field(() => Boolean, { nullable: true })
+  status?: Boolean | null;
+
   @Field(() => String, { nullable: true })
   rememberToken?: string | null;
 

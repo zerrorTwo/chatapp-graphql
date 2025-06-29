@@ -101,33 +101,6 @@ export class AuthService {
     return this.issueTokens(user, response);
   }
 
-  async googleLogin(googleLoginDto: GoogleLoginDto, response: Response) {
-    const { email, googleId, name } = googleLoginDto;
-    try {
-      let user = await this.prisma.user.findFirst({
-        where: {
-          OR: [{ email }, { googleId }],
-        },
-      });
-      if (user) {
-        throw new UnauthorizedException('User already in use');
-      }
-      const hashedPassword = await bcrypt.hash(googleId, 10);
-      user = await this.prisma.user.create({
-        data: {
-          email,
-          googleId,
-          userName: name,
-          password: hashedPassword,
-        },
-      });
-
-      return this.issueTokens(user, response);
-    } catch {
-      throw new UnauthorizedException('Invalid or expired login token');
-    }
-  }
-
   async logout(response: Response) {
     response.clearCookie('refresh_token');
     return 'Successfully logged out';
@@ -178,6 +151,10 @@ export class AuthService {
     let user = await this.prisma.user.findFirst({
       where: { email },
     });
+
+    if (user) {
+      throw new UnauthorizedException('User already in use');
+    }
 
     if (!user) {
       user = await this.prisma.user.create({

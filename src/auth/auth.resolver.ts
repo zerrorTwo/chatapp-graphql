@@ -36,14 +36,6 @@ export class AuthResolver {
     return this.authService.login(loginDto, context.res);
   }
 
-  @Mutation(() => LoginResponse)
-  async ggLogin(
-    @Args('ggLoginInput') googleLoginDto: GoogleLoginDto,
-    @Context() context: { res: Response },
-  ): Promise<LoginResponse> {
-    return this.authService.googleLogin(googleLoginDto, context.res);
-  }
-
   @Mutation(() => String)
   async logout(@Context() context: { res: Response }): Promise<string> {
     return this.authService.logout(context.res);

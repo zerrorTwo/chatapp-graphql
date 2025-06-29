@@ -25,6 +25,7 @@ model User {
   chatrooms       Chatroom[]      @relation("ChatroomUsers")
   messages        Message[]
   ChatroomUsers   ChatroomUsers[]
+  status          Boolean?        @default(true)
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
