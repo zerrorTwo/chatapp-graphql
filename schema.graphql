@@ -8,6 +8,7 @@ type User {
   avatarUrl: String
   email: String!
   emailVerifiedAt: DateTime
+  status: Boolean
   rememberToken: String
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -36,7 +37,7 @@ type LoginResponse {
 
 type Query {
   getAllUser(filter: UserFilter!): UserPaginationResponse!
-  getUserById(id: Float!): User
+  getUserById: User
   getUserByEmail(email: String!): User
   helloNe: String!
 }
@@ -49,14 +50,16 @@ input UserFilter {
 
 type Mutation {
   createUser(userData: CreateUserDto!): User!
-  updateUser(id: Float!, dataUpdate: UpdateUserDto!): User!
+  updateUser(dataUpdate: UpdateUserDto!): User!
   deleteOneById(id: Float!): Boolean!
   register(registerInput: RegisterDto!): RegisterResponse!
   login(loginInput: LoginDto!): LoginResponse!
-  ggLogin(ggLoginInput: GoogleLoginDto!): LoginResponse!
   logout: String!
   refreshToken: String!
   loginWithGoogleIdToken(input: String!): LoginResponse!
+  uploadAvatar(file: Upload!): String!
+  uploadImage(file: Upload!): String!
+  uploadFile(file: Upload!): String!
 }
 
 input CreateUserDto {
@@ -68,6 +71,7 @@ input CreateUserDto {
 input UpdateUserDto {
   userName: String
   avatarUrl: String
+  status: Boolean
 }
 
 input RegisterDto {
@@ -82,8 +86,5 @@ input LoginDto {
   password: String!
 }
 
-input GoogleLoginDto {
-  email: String!
-  name: String!
-  googleId: String!
-}
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload

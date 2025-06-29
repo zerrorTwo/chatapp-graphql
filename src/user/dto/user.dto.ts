@@ -39,4 +39,8 @@ export class UpdateUserDto {
   @Field(() => String, { nullable: true })
   @IsOptional()
   avatarUrl?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  @IsOptional()
+  status?: boolean;
 }

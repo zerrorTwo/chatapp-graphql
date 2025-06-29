@@ -3,7 +3,12 @@ import { type CorsOptions } from '@nestjs/common/interfaces/external/cors-option
 const CorsOptions: CorsOptions = {
   origin: 'http://localhost:3000',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-apollo-operation-name'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'x-apollo-operation-name',
+    'apollo-require-preflight',
+  ],
   credentials: true,
   maxAge: 86400,
 };
